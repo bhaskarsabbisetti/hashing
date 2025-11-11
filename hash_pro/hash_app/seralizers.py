@@ -1,6 +1,6 @@
-from rest_framework import seralizers
+from rest_framework import serializers
 from . models import Developers
-class Developerseralizer (seralizers.ModelSerializer):
+class Developerseralizer (serializers.ModelSerializer):
     class Meta:
         model=Developers
         fields="__all__"
