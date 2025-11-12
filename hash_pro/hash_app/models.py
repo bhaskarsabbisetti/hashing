@@ -6,4 +6,4 @@ class Developers (models.Model):
     name=models.CharField(max_length=20)
     mail=models.EmailField(unique=True)
     mobile=models.IntegerField(unique=True,max_length=10)
-    password=models.CharField(default="1234",max_length=100)
+    password=models.CharField(default="1234",max_length=128)
