@@ -37,8 +37,14 @@ def login(req):
     T="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicm9zaGFuIiwiZW1haWwiOiJyb3NoYW5AZ21haWwuY29tIn0.JkFvcpewFaqnl8zDQPoyLfL74xBnm-2sAaGDouQgAdc"
     user=jwt.decode(jwt=T,key='django-insecure-jjmhy4fguib0-e$+vfm22q=iu061qp)ck7#-*6mgo_(k36jim7',algorithms=["HS256"])
     print(user)
+    
     if is_same:
-        return HttpResponse("Welcome to the webpage")
+        res=HttpResponse("Welcome to the webpage")
+        res.set_cookie(
+            key="my_cookie",
+            value=T
+        )
+        return res
     else:
         return HttpResponse("Invalid Credientials")
     
