@@ -19,6 +19,23 @@ def register(req):
         dec_pass=enc_pass.decode("utf-8")
         Developers.objects.create(name=data['name'],mail=data['mail'],mobile=data['mobile'],password=dec_pass)
         return JsonResponse({"msg":"registerd successfully"})
+@csrf_exempt
+def users(req):
+    if req.method=="GET":
+        try:
+            cookie_token=req.COOKIES.get("my_cookie")
+            cookie=jwt.decode(jwt=cookie_token,key='django-insecure-jjmhy4fguib0-e$+vfm22q=iu061qp)ck7#-*6mgo_(k36jim7',algorithms=["HS256"])
+        except:
+            return HttpResponse("no cookie found")
+        if cookie["is_valid"]:
+            data=Developerseralizer(Developers.objects.all(),many=True)
+            return JsonResponse({"users":data.data},safe=False)
+        else:
+            res=HttpResponse("not a valid user")
+            res.delete_cookie("my_cookie")
+            return res
+    return HttpResponse("only get method works")
+
 def login(req):
     user_data=json.loads(req.body)
     password=user_data["password"]
@@ -29,20 +46,22 @@ def login(req):
     is_same=bcrypt.checkpw(password.encode("utf-8"),seralized_pass.encode("utf-8"))
     payloads={
         "name":data.name,
-        "email":data.mail
+        "email":data.mail,
+        "is_valid":False,
+        "id":data.id
 
     }
     token=jwt.encode(payload=payloads,key='django-insecure-jjmhy4fguib0-e$+vfm22q=iu061qp)ck7#-*6mgo_(k36jim7',algorithm="HS256")
     print(token)
-    T="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicm9zaGFuIiwiZW1haWwiOiJyb3NoYW5AZ21haWwuY29tIn0.JkFvcpewFaqnl8zDQPoyLfL74xBnm-2sAaGDouQgAdc"
-    user=jwt.decode(jwt=T,key='django-insecure-jjmhy4fguib0-e$+vfm22q=iu061qp)ck7#-*6mgo_(k36jim7',algorithms=["HS256"])
+    user=jwt.decode(jwt=token,key='django-insecure-jjmhy4fguib0-e$+vfm22q=iu061qp)ck7#-*6mgo_(k36jim7',algorithms=["HS256"])
     print(user)
     
     if is_same:
         res=HttpResponse("Welcome to the webpage")
         res.set_cookie(
             key="my_cookie",
-            value=T
+            value=token,
+            httponly=True,
         )
         return res
     else:
