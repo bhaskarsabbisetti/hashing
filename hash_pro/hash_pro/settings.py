@@ -147,5 +147,5 @@ EMAIL_HOST ="smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "bhaskarsabbisetti@gmail.com"
-EMAIL_HOST_PASSWORD = "guzv emgr oxjt ifnu" # Use App Password,
+# EMAIL_HOST_PASSWORD = "guzv emgr oxjt ifnu" # Use App Password,
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
