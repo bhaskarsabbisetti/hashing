@@ -6,6 +6,10 @@ from django.views.decorators.csrf import csrf_exempt
 import bcrypt
 from .seralizers import Developerseralizer
 import jwt
+import datetime
+from django.conf import settings
+from django.core.mail import send_mail,EmailMessage
+
 # Create your views here.
 def welcome(req):
     return HttpResponse("welcome user")
@@ -18,6 +22,7 @@ def register(req):
         enc_pass=bcrypt.hashpw(password=password,salt=u_salt)
         dec_pass=enc_pass.decode("utf-8")
         Developers.objects.create(name=data['name'],mail=data['mail'],mobile=data['mobile'],password=dec_pass)
+        send_mail(subject="welcome mail",message="Thank you for registerd to our app",recipient_list=[data['mail']],from_email=settings.EMAIL_HOST_USER)
         return JsonResponse({"msg":"registerd successfully"})
 @csrf_exempt
 def users(req):
@@ -66,5 +71,15 @@ def login(req):
         return res
     else:
         return HttpResponse("Invalid Credientials")
+@csrf_exempt
+def send_attach(req):
+    user_mail=req.POST.get("mail")
+    print(user_mail)
+    mail=EmailMessage(subject="sending file",body="hello this mail is an test mail",from_email=settings.EMAIL_HOST_USER,to = [user_mail])
+    mail.attach_file("C:/Users/bhask/OneDrive/Pictures/Screenshots/Screenshot 2025-11-14 222311.png")
+    mail.send()
+    return HttpResponse("mail sent successfully")
+
+
     
 
